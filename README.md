@@ -6,7 +6,7 @@ There are two components:
 
 ## Client (monitored)
 
-The client machines run a cron job at desired intervals to "ping" the server and let it know they're still alive.
+The client machines run a cron job at desired intervals to "ping" the server(s) and let it know they're still alive.
 
 ## Server (monitoring)
 

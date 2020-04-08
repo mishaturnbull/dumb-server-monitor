@@ -32,6 +32,7 @@ def cbool(value):
     else:
         return default
 
+
 class Client(object):
     """
     This is the object that the server uses to represent a client it's
@@ -159,7 +160,7 @@ class Server(socketserver.BaseRequestHandler):
                 # client disconnected
                 break
 
-            flag, cname, passhash = self.data.split('\x1e')
+            flag, cname, passhash = self.data.split(b'\x1e')
 
             if flag == '\x11':
                 self.handle_client_update(cname, passhash)

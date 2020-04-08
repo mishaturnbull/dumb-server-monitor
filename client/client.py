@@ -37,7 +37,7 @@ def process_psk(server_id):
 
 def get_server_list():
     servers = []
-    for server in SERVERS:
+    for server in SERVERS.sections():
         servers.append(Server(
             SERVERS[server]['address'],
             int(SERVERS[server]['port']),
