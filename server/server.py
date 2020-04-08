@@ -10,7 +10,6 @@ import configparser
 import socketserver
 from datetime import datetime
 import functools
-import time
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read("dsm-server.conf")
