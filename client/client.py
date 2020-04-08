@@ -33,6 +33,13 @@ def process_psk(server_id):
     :param server_id: server header name
     :return: None or 64-byte string.
     """
+    plaintext = SERVERS[server_id]['psk']
+    if len(plaintext) == 0:
+        return None
+    hash = hashlib.sha256(plaintext).hexdigest()
+    plaintext = '\x00' * len(plaintext) * 2
+    del plaintext
+    return hash
 
 
 def get_server_list():
