@@ -23,6 +23,9 @@ class Server(object):
         self.address = address
         self.port = port
         self.ourname = ourname
+        if not self.ourname:
+            with open("/etc/hostname", 'r') as hostname:
+                self.ourname = hostname.readlines()[0]
         self.psk_hash = psk_hash
 
 
