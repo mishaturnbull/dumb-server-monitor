@@ -14,3 +14,9 @@ The server runs a Python-based webserver in order to accept "pings" from the cli
 output them in either over the internet or into a file on request.
 
 The server by default runs on port 55435.
+
+# Guarantee of quality
+
+I use this on both a 14-node cluster computer and a 20-node LAN, so if you can come
+up with an improvement that helps both of us I'll implement it.  As is, the codebase
+is *exactly* 300 lines of Python, so naturally I can't change that.
