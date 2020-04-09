@@ -72,7 +72,7 @@ class Client(object):
         :return: One line string.
         """
         return "{}\t{}\n".format(
-            self.name,
+            self.name.decode('utf-8'),
             self.last_seen_time.strftime("%Y-%m-%d %H:%M:%S")
         )
 
@@ -83,7 +83,7 @@ class Client(object):
         :return: ASCII string terminated by 0x09 (tab).
         """
         return "{}\x1d{}\t".format(
-            self.name,
+            self.name.decode('utf-8'),
             self.last_seen_time.strftime("%Y%m%d%H%M%S")
         )
 
@@ -110,7 +110,11 @@ class RequestHandler(socketserver.BaseRequestHandler):
     def update_client(self, cname):
         newclient = Client(cname)
         is_in_list = newclient.is_in_list(self.server.dsmclients)
-        if not is_in_list:
+        # this has to be "is False" here, otherwise there's problems --
+        # doing "not is_in_list" means that anything at element 0
+        # always gets appended, since 0 is false-y.  "is False" means that
+        # it has to be False, not just 0, so that doesn't break.
+        if is_in_list is False:
             # add client to the list
             self.server.dsmclients.append(newclient)
         else:
