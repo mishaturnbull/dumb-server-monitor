@@ -88,7 +88,7 @@ class Client(object):
         )
 
 
-class Server(socketserver.BaseRequestHandler):
+class RequestHandler(socketserver.BaseRequestHandler):
     """
     This is the actual server itself.
     """
@@ -162,11 +162,11 @@ class Server(socketserver.BaseRequestHandler):
 
             flag, cname, passhash = self.data.split(b'\x1e')
 
-            if flag == '\x11':
+            if flag == b'\x11':
                 self.handle_client_update(cname, passhash)
-            elif flag == '\x12':
+            elif flag == b'\x12':
                 self.handle_network_output()
-            elif flag == '\x13':
+            elif flag == b'\x13':
                 self.handle_file_output()
 
     def finish(self):
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     host = CONFIG['network']['address'].strip()
     allow_rebind = cbool(CONFIG['network']['allow-rebind'])
 
-    server = socketserver.TCPServer((host, port), Server)
+    server = socketserver.TCPServer((host, port), RequestHandler)
     if allow_rebind:
         server.allow_reuse_address = True
     server.serve_forever()
