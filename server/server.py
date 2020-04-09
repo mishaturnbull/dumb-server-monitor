@@ -94,7 +94,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
     """
 
     def setup(self):
-        self.clients = []
+        self.server.dsmclients = []
 
         if CONFIG["security"]["psk"].strip():
             self.password_hash = CONFIG['security']['psk'].strip()
@@ -111,13 +111,13 @@ class RequestHandler(socketserver.BaseRequestHandler):
 
     def update_client(self, cname):
         newclient = Client(cname)
-        is_in_list = newclient.is_in_list(self.clients)
+        is_in_list = newclient.is_in_list(self.server.dsmclients)
         if not is_in_list:
             # add client to the list
-            self.clients.append(newclient)
+            self.server.dsmclients.append(newclient)
         else:
             # update existing client
-            self.clients[is_in_list].seen_again()
+            self.server.dsmclients[is_in_list].seen_again()
 
     def handle_client_update(self, cname, passhash):
         cname = cname.strip()
@@ -135,7 +135,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
             return  # nope!
 
         message = ""
-        for client in self.clients:
+        for client in self.server.dsmclients:
             message += client.repr_for_network()
 
         send = bytes(message, 'utf-8')
@@ -146,7 +146,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
             return  # nope!
 
         lines = []
-        for client in self.clients:
+        for client in self.server.dsmclients:
             lines.append(client.repr_for_file())
 
         with open(self.file_dest, 'w') as outputfile:
@@ -172,6 +172,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
     def finish(self):
         # not much to do here
         pass
+
 
 if __name__ == '__main__':
     port = int(CONFIG['network']['port'])
