@@ -71,7 +71,7 @@ class Client(object):
         Get a string representation of this Client object to be put in a file.
         :return: One line string.
         """
-        return "{}\t{}".format(
+        return "{}\t{}\n".format(
             self.name,
             self.last_seen_time.strftime("%Y-%m-%d %H:%M:%S")
         )
@@ -94,8 +94,6 @@ class RequestHandler(socketserver.BaseRequestHandler):
     """
 
     def setup(self):
-        self.server.dsmclients = []
-
         if CONFIG["security"]["psk"].strip():
             self.password_hash = CONFIG['security']['psk'].strip()
         else:
@@ -180,6 +178,7 @@ if __name__ == '__main__':
     allow_rebind = cbool(CONFIG['network']['allow-rebind'])
 
     server = socketserver.TCPServer((host, port), RequestHandler)
+    server.dsmclients = []
     if allow_rebind:
         server.allow_reuse_address = True
     server.serve_forever()

@@ -19,7 +19,7 @@ def main():
     port = int(CONFIG['network']['port'])
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(('localhost', port))
-    sock.sendall(bytes(MESSAGE))
+    sock.sendall(bytes(MESSAGE, 'utf-8'))
 
 
 if __name__ == '__main__':
