@@ -181,6 +181,7 @@ if __name__ == '__main__':
     host = CONFIG['network']['address'].strip()
     allow_rebind = cbool(CONFIG['network']['allow-rebind'])
 
+    print("Starting DSM server!")
     server = socketserver.TCPServer((host, port), RequestHandler)
     server.dsmclients = []
     if allow_rebind:
