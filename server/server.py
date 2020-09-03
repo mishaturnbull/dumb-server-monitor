@@ -126,11 +126,12 @@ class RequestHandler(socketserver.BaseRequestHandler):
         passhash = passhash.strip()
 
         if self.password_hash:
-            if passhash != self.password_hash:
+            if passhash.decode('ascii') != self.password_hash:
                 # got password wrong, just forget about them
                 return
 
         self.update_client(cname)
+	self.handle_file_output()
 
     def handle_network_output(self):
         if not self.allow_network_output:
