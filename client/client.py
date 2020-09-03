@@ -39,7 +39,7 @@ def process_psk(server_id):
     plaintext = SERVERS[server_id]['psk']
     if len(plaintext) == 0:
         return None
-    hash = hashlib.sha256(plaintext).hexdigest()
+    hash = hashlib.sha256(plaintext.encode('ascii').strip()).hexdigest()
     plaintext = '\x00' * len(plaintext) * 2
     del plaintext
     return hash
