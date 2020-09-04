@@ -8,6 +8,8 @@ There are two components:
 
 The client machines run a cron job at desired intervals to "ping" the server(s) and let it know they're still alive.
 
+NOTE: you must not have `PrivateNetwork=yes` in your systemd configs for cron, or this process will fail.
+
 ## Server (monitoring)
 
 The server runs a Python-based webserver in order to accept "pings" from the clients.  The server maintains a list of currently known clients and can 
