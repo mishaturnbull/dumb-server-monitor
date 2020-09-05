@@ -10,6 +10,7 @@ import configparser
 import socketserver
 from datetime import datetime
 import functools
+import hashlib
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read("dsm-server.conf")
@@ -121,17 +122,27 @@ class RequestHandler(socketserver.BaseRequestHandler):
             # update existing client
             self.server.dsmclients[is_in_list].seen_again()
 
-    def handle_client_update(self, cname, passhash):
+    def check_hash(self, timestamp, passhash):
+        if not self.password_hash:
+            return True
+
+        phash = self.password_hash.encode('ascii')
+        s = (timestamp + phash).strip()
+        expected = hashlib.sha256(s).hexdigest().encode('ascii')
+        return expected == passhash
+
+    def handle_client_update(self, cname, timestamp, passhash):
         cname = cname.strip()
         passhash = passhash.strip()
+        timestamp = timestamp.strip()
 
-        if self.password_hash:
-            if passhash.decode('ascii') != self.password_hash:
-                # got password wrong, just forget about them
-                return
+        valid = self.check_hash(timestamp, passhash)
+        if not valid:
+            # got password wrong, just forget about them
+            return
 
         self.update_client(cname)
-	self.handle_file_output()
+        self.handle_file_output()
 
     def handle_network_output(self):
         if not self.allow_network_output:
@@ -163,10 +174,15 @@ class RequestHandler(socketserver.BaseRequestHandler):
                 # client disconnected
                 break
 
-            flag, cname, passhash = self.data.split(b'\x1e')
+            try:
+                flag, cname, timestamp, passhash = self.data.split(b'\x1e')
+            except ValueError:
+                # not enough or too many values to unpack, something's wrong.
+                # discard the message, not worth trying to fix it lmao
+                continue
 
             if flag == b'\x11':
-                self.handle_client_update(cname, passhash)
+                self.handle_client_update(cname, timestamp, passhash)
             elif flag == b'\x12':
                 self.handle_network_output()
             elif flag == b'\x13':
