@@ -12,7 +12,7 @@ Valid data fields is as follows:
 | Flag | 1 byte | 1 byte |
 | Client name | 1 byte | 32 bytes |
 | Transmission timestamp | 4 byte | 8 byte |
-| Name + password hash | 0 bytes | 64 bytes |
+| Time + password hash | 0 bytes | 64 bytes |
 
 Fields should be separated by a single `\x1e` character.
 
