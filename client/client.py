@@ -31,7 +31,8 @@ class Server(object):
         self.psk_hash = psk_hash
 
         timestamp = str(self.timestamp).encode('ascii').strip()
-        self.hash = hashlib.sha256(timestamp + self.psk_hash).hexdigest()
+        pskhash = self.psk_hash.encode('ascii').strip()
+        self.hash = hashlib.sha256(timestamp + pskhash).hexdigest()
 
 
 def process_psk(server_id):

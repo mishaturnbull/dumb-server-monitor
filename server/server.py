@@ -126,6 +126,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
         if not self.password_hash:
             return True
 
+        timestamp = timestamp.encode('ascii')
         s = (timestamp + self.password_hash).encode('ascii').strip()
         expected = hashlib.sha256(s).hexdigest()
         return expected == passhash
