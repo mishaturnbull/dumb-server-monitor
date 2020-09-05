@@ -128,7 +128,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
 
         phash = self.password_hash.encode('ascii')
         s = (timestamp + phash).strip()
-        expected = hashlib.sha256(s).hexdigest()
+        expected = hashlib.sha256(s).hexdigest().encode('ascii')
         return expected == passhash
 
     def handle_client_update(self, cname, timestamp, passhash):
