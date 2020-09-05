@@ -71,7 +71,7 @@ def construct_message(server):
     return "\x11\x1e{}\x1e{}\x1e{}".format(
         server.ourname,
         server.timestamp,
-        server.hash if server.hash else ''
+        server.hash if server.psk_hash else ''
     )
 
 
