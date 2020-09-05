@@ -9,6 +9,7 @@ servers as defined in servers.conf and letting them know we're alive.
 import configparser
 import socket
 import hashlib
+import time
 
 SERVERS = configparser.ConfigParser()
 SERVERS.read('servers.conf')
@@ -23,10 +24,14 @@ class Server(object):
         self.address = address
         self.port = port
         self.ourname = ourname
+        self.timestamp = time.time()
         if not self.ourname:
             with open("/etc/hostname", 'r') as hostname:
                 self.ourname = hostname.readlines()[0]
         self.psk_hash = psk_hash
+
+        timestamp = str(self.timestamp).encode('ascii').strip()
+        self.hash = hashlib.sha256(timestamp + self.psk_hash).hexdigest()
 
 
 def process_psk(server_id):
@@ -36,10 +41,10 @@ def process_psk(server_id):
     :param server_id: server header name
     :return: None or 64-byte string.
     """
-    plaintext = SERVERS[server_id]['psk']
+    plaintext = SERVERS[server_id]['psk'].encode('ascii').strip()
     if len(plaintext) == 0:
         return None
-    hash = hashlib.sha256(plaintext.encode('ascii').strip()).hexdigest()
+    hash = hashlib.sha256(plaintext).hexdigest()
     plaintext = '\x00' * len(plaintext) * 2
     del plaintext
     return hash
@@ -63,9 +68,10 @@ def construct_message(server):
     :param server: Server object
     :return: string
     """
-    return "\x11\x1e{}\x1e{}".format(
+    return "\x11\x1e{}\x1e{}\x1e{}".format(
         server.ourname,
-        server.psk_hash if server.psk_hash else ''
+        server.timestamp,
+        server.hash if server.hash else ''
     )
 
 
