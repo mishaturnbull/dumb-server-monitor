@@ -28,7 +28,7 @@ class Server(object):
         if not self.ourname:
             with open("/etc/hostname", 'r') as hostname:
                 self.ourname = hostname.readlines()[0]
-        self.psk_hash = psk_hash
+        self.psk_hash = psk_hash or ''
 
         timestamp = str(self.timestamp).encode('ascii').strip()
         pskhash = self.psk_hash.encode('ascii').strip()
